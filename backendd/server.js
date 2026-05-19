@@ -1,6 +1,6 @@
-const Express= require('express');
-const mongoose = require('mongoose');
-const taskroute= require('./routes/task.route.js')
+import Express from 'express';
+import mongoose from 'mongoose';
+import taskroute from './routes/task.route.js'
 const app= Express();
 
 app.use(Express.json());

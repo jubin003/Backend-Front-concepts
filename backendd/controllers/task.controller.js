@@ -1,6 +1,6 @@
-const Task= require('../models/task.model.js')
+import Task from '../models/task.model.js'
 
-const getTasks= async(req,res)=>{
+export const getTasks= async(req,res)=>{
     try{
         const task= await Task.find();
         res.status(200).json(task);
@@ -9,7 +9,7 @@ const getTasks= async(req,res)=>{
     }
 }
 
-const getTask= async(req,res)=>{
+export const getTask= async(req,res)=>{
     try{
         const id = req.params;
         const task = await Task.findById(id.id);
@@ -23,7 +23,7 @@ const getTask= async(req,res)=>{
     }
 }
 
-const createTask= async(req,res)=>{
+export const createTask= async(req,res)=>{
     try{
         const content= await Task.create(req.body);
         if(content){
@@ -36,7 +36,7 @@ const createTask= async(req,res)=>{
     }
 }
 
-const deleteTask = async(req,res)=>{
+export const deleteTask = async(req,res)=>{
     try{
         const id = req.params.id;
         if(id){
@@ -51,7 +51,7 @@ const deleteTask = async(req,res)=>{
     }
 }
 
-const updateTask = async(req,res)=>{
+export const updateTask = async(req,res)=>{
     try{
         const id= req.params.id;
         if(id){
@@ -65,10 +65,3 @@ const updateTask = async(req,res)=>{
     }
 }
 
-module.exports={
-    getTasks,
-    getTask,
-    createTask,
-    deleteTask,
-    updateTask
-}
