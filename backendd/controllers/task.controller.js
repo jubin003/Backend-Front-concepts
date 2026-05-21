@@ -1,8 +1,22 @@
 import Task from '../models/task.model.js'
+import cache from '../cache/cache.js';
 
 export const getTasks= async(req,res)=>{
+
     try{
-        const task= await Task.find();
+        const cached= cache.get('tasks')
+
+        if(cached){
+            return res.status(200).json(cached);       
+        } 
+        const {priority}= req.query;
+        const filter={};
+        if(priority){
+            filter.priority=priority;
+            
+        }
+        const task= await Task.find({...filter,userId:req.auth.id});
+        cache.set('tasks',task)
         res.status(200).json(task);
     }catch(error){
         res.status(500).json({message:error.message})
@@ -11,8 +25,17 @@ export const getTasks= async(req,res)=>{
 
 export const getTask= async(req,res)=>{
     try{
-        const id = req.params;
-        const task = await Task.findById(id.id);
+        const id = req.params.id;
+        const cached= cache.get(`task-${id}`);
+        if(cached){
+            return res.status(200).json(cached);
+        }
+        
+        const task = await Task.findById(id);
+        if(task.userId.toString()!==req.auth.id){
+            return res.status(403).json({message:'access denied'})
+        }
+        cache.set(`task-${id}`,task);
         if(task){
             res.status(200).json(task);
         }else{
@@ -25,9 +48,11 @@ export const getTask= async(req,res)=>{
 
 export const createTask= async(req,res)=>{
     try{
-        const content= await Task.create(req.body);
+        const content= await Task.create({...req.body,userId:req.auth.id});
         if(content){
+            cache.del('tasks');
             res.status(201).json(content)
+            
         }else{
             res.json({message:'need a task'})
         }
@@ -40,8 +65,13 @@ export const deleteTask = async(req,res)=>{
     try{
         const id = req.params.id;
         if(id){
-            await Task.findByIdAndDelete(id);
-            res.status(204).json({message:`${id} deleted`})
+            const task =await Task.findByIdAndDelete(id);
+            if(task.userId.toString()!==req.auth.id){
+                return res.status(403).json({message:'action denied'});
+            }
+            cache.del('tasks')
+            cache.del(`task-${id}`)
+            res.status(200).json({message:`${id} deleted`})
         }else{
             res.status(404).json({message:'does not exist'})
         }
@@ -55,10 +85,16 @@ export const updateTask = async(req,res)=>{
     try{
         const id= req.params.id;
         if(id){
-            await Task.findByIdAndUpdate(id,req.body);
-            res.status(200).json({message:`${id} updated`})
+            cache.del('tasks')
+            cache.del(`task-${id}`)
+            const task =await Task.findByIdAndUpdate(id,req.body);
+            if(task.userId.toString()!==req.auth.id){
+                return res.status(403).json({message:'action denied'});
+            }
+           
+            res.status(200).json({message:`${id} updated`,task})
         }else{
-            res.staus(404).json({message:'task does not exist'})
+            res.status(404).json({message:'task does not exist'})
         }
     }catch(error){
         res.status(500).json({message:error.message})

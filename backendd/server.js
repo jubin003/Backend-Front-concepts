@@ -1,6 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config()
+
 import Express from 'express';
 import mongoose from 'mongoose';
 import taskroute from './routes/task.route.js'
+import authroute from './routes/auth.route.js'
+
+
 const app= Express();
 
 app.use(Express.json());
@@ -23,3 +29,4 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/task',taskroute)
+app.use('/api/',authroute)
