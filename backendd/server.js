@@ -38,4 +38,4 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/task',taskroute)
-app.use('/api/',authroute)
+app.use('/api/auth',authroute)
