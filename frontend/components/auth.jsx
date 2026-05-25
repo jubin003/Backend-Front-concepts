@@ -77,17 +77,17 @@ export function Login(){
 
         try{
            const response = await fetch(`${url}/login`,{
-            method:POST,
+            method:'POST',
             headers:{
                 'Content-Type':'application/json'
             },
             body:JSON.stringify({email,password})
         })
 
-        const data= await response.json
+        const data= await response.json()
         if(response.ok){
             localStorage.setItem('token',data.token)
-            setMessage(data.message)
+            setMessage('logged in')
 
         }else{
             if(data.errors){
@@ -121,6 +121,31 @@ export function Login(){
 
             <button onClick={handlelogin}>Login</button>
 
+            {message &&<p>{message}</p>}
+        </div>
+    )
+}
+
+export function Logout(){
+    const [message,setMessage]=useState('')
+    const handleogout = async()=>{
+
+        try{
+            const token = localStorage.getItem('token');
+            if(token){
+                localStorage.clear();
+                setMessage('logged outed')
+            }
+        }catch(error){
+            setMessage('Something went wrong')
+        }
+      
+
+    }
+
+    return(
+        <div>
+            <button onClick={handleogout}>log out</button>
             {message &&<p>{message}</p>}
         </div>
     )

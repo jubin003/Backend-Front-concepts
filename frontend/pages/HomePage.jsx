@@ -19,7 +19,7 @@ export function CreateTask(){
                     },
                     body:JSON.stringify({name,content,priority})
                  })
-                     const data = await response.json;
+                     const data = await response.json();
                     if(response.ok){
                         setMessage('post created successfully')
                     }else{
@@ -30,7 +30,7 @@ export function CreateTask(){
                         }
                     }
                 }else{
-                    setMessage('Please Login first')
+                    window.location.href='/login'
                 }
             
             }catch(error){
@@ -66,4 +66,50 @@ export function CreateTask(){
             
         </div>
     )
+}
+
+export function DeleteTask(){
+    const [id,setId]=useState(0);
+    const [message,setMessage]=useState('');
+
+    const handleDelete= async ()=>{
+        try{
+        
+            const token = localStorage.getItem('token')
+                if(token){
+                        const response = await fetch(`${url}/${id}`,{
+                        method:'DELETE',
+                        headers:{
+                            'Content-Type':'application/json',
+                            'authorization':`Bearer ${token}`
+                        },
+                        body:JSON.stringify({id})
+                    })
+                    const data = await response.json();
+                    if(response.ok){
+                            setMessage(data.message)
+                    }
+                }else{
+                    window.location.href='/login'
+                }
+        }catch(error){
+                setMessage('something went wrong')
+        }
+    }
+
+    
+
+    return(
+        <div>
+            <input
+                type='number'
+                placeholder="id"
+                value={id}
+                onChange={(e)=>setId(e.target.value)}>
+
+            </input>
+            <button onClick={handleDelete}>Delete</button>
+            {message && <p>{message}</p>}
+        </div>
+        )
 }
