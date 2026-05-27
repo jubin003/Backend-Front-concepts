@@ -65,8 +65,13 @@ export const deleteTask = async(req,res)=>{
     try{
         const id = req.params.id;
         if(id){
-            const task =await Task.findByIdAndDelete(id);
+            const tesk= await Task.findById(id);
+            if(!tesk){
+                return res.status(404).json('no user')
+            }
+            
             if(task.userId.toString()!==req.auth.id){
+                const task =await Task.findByIdAndDelete(id);
                 return res.status(403).json({message:'action denied'});
             }
             cache.del('tasks')
@@ -85,10 +90,16 @@ export const updateTask = async(req,res)=>{
     try{
         const id= req.params.id;
         if(id){
-            cache.del('tasks')
-            cache.del(`task-${id}`)
-            const task =await Task.findByIdAndUpdate(id,req.body);
+            const tesk= await Task.findById(id);
+            if(!tesk){
+                return res.status(404).json('no user')
+            }
+            
+            
             if(task.userId.toString()!==req.auth.id){
+                cache.del('tasks')
+                cache.del(`task-${id}`)
+                const task =await Task.findByIdAndUpdate(id,req.body);
                 return res.status(403).json({message:'action denied'});
             }
            

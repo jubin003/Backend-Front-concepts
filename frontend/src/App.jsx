@@ -1,8 +1,8 @@
 // App.jsx
 import { Routes, Route } from 'react-router-dom'
 
-import { Register, Login ,Logout} from '../components/auth.jsx'
-import { CreateTask ,DeleteTask} from '../pages/HomePage.jsx'
+import { Register, Login ,Logout} from '../pages/LoginPage.jsx'
+import { CreateTask ,DeleteTask,GetAllTask,UpdateTask} from '../pages/HomePage.jsx'
 
 export default function App() {
     return (
@@ -13,6 +13,8 @@ export default function App() {
                 <Route path='/create' element={<CreateTask />} />
                 <Route path='/logout' element={<Logout></Logout>}/>
                 <Route path='/delete' element={<DeleteTask></DeleteTask>}/>
+                <Route path='/all' element={<GetAllTask></GetAllTask>}/>
+                <Route path='update' element={<UpdateTask></UpdateTask>}></Route>
             </Routes>
         </div>
     )
