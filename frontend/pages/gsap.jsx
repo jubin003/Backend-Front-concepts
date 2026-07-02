@@ -1,12 +1,20 @@
-export default function Gaspp(){
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
-    const box=()=>{
-        return(
-            <div className='mt-20'>
-                <div id="bluebox" className="w-20 h-20 bg-blue-500 rounded-lg"></div>
+export function Gaspp() {
+    useGSAP(() => {
+        gsap.to('#box', {
+            x: 250,
+            repeat: -1,
+            duration: 1,
+            yoyo: true,
 
-            </div>
-        )
+        });
+    }, []);
 
-    }
+    return (
+        <div>
+            <div id="box" className="mt-20 bg-green-400 w-20 h-20 ml-20 rounded-lg" />
+        </div>
+    );
 }
